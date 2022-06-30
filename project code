@@ -1,0 +1,129 @@
+#include <LiquidCrystal.h>
+#include <Servo.h>
+Servo myservo; 
+const int rs = 2, en = 3,  d4 = 4, d5 = 5, d6 = 6, d7 = 7;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+char reading; 
+#define MQ2pin A5
+#define buzzer 11
+#define tempPin A0
+float val;
+float volt;
+float temp;
+int sensorValue; 
+int count =0;
+void setup() {
+ myservo.attach(8);
+  myservo.write(0);
+pinMode(buzzer,OUTPUT);
+lcd.setCursor(0,1);
+pinMode(10, OUTPUT);
+Serial.begin(9600);
+
+
+}
+void LCD_Check_pass(){
+  String incomingString;
+
+ if(Serial.available()){
+    incomingString = Serial.readString();
+      lcd.clear();
+     lcd.print("Enter your pass");
+    if (incomingString=="MMSEA"){
+      myservo.write(90);
+      Serial.print("t");
+      lcd.clear();
+     lcd.print("Right Password");
+      //send to app door is open
+      delay(5000);
+       myservo.write(-90);
+      //send to app doop closed
+      count=0;
+    }
+    else if (incomingString!="MMSEA"){
+     count++;
+     Serial.print(count);
+       lcd.clear();
+     lcd.print("Wrong password");
+     delay(1000);
+     lcd.clear();
+     if (count==3){
+        lcd.clear();
+      lcd.print("wait 3 sec");
+       int a=0;
+ while(a<3){
+   a++;
+   
+ lcd.setCursor(12, 1);
+    lcd.print(a);
+    delay(1000);
+     }
+     }
+   }
+}
+}
+void control_Bluetooth(){
+  if(Serial.available()){
+ char data=Serial.read();
+    
+    if(data=='O')
+    {
+      digitalWrite(10,1);
+}
+if(data=='C')
+    {
+      digitalWrite(10,0);
+}
+if(data=='D')
+    {
+      myservo.write(90);
+}
+if(data=='F')
+    {
+      myservo.write(-90);
+}
+  }
+  }
+  
+void loop() {
+ LCD_Check_pass();
+ control_Bluetooth();
+ void sensors()
+  }
+void sensors(){
+  sensorValue = analogRead(MQ2pin); 
+Serial.print("Gas Sensor Value: ");
+Serial.println(sensorValue);
+if(sensorValue > 150)
+{
+Serial.println(" | Smoke detected!");
+digitalWrite(buzzer,HIGH);
+myservo.write(90);
+delay(6000);
+myservo.write(-90);
+}
+else
+{
+digitalWrite(buzzer,LOW);
+}
+delay(2000);
+val = analogRead(tempPin); 
+volt= ( val*5)/1023.0; 
+temp= volt/0.01;
+Serial.println("TEMPRATURE =");
+Serial.print(temp); 
+Serial.println("*C"); 
+delay(1000);
+if (tmp>50){
+  myservo.write(90);
+delay(6000);
+myservo.write(-90);
+  }
+// wait 2s for next reading}
+}
+
+    
+  
+  
+   
+  
